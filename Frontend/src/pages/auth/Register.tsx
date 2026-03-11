@@ -7,7 +7,7 @@ const Register = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [role, setRole] = useState('petani');
+    const [role] = useState('pembeli');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const { register } = useAuth();
@@ -27,11 +27,7 @@ const Register = () => {
         }
     };
 
-    const roles = [
-        { value: 'petani', label: 'Petani', icon: HiSun, desc: 'Kelola lahan & panen' },
-        { value: 'distributor', label: 'Distributor', icon: HiTruck, desc: 'Distribusi hasil panen' },
-        { value: 'pembeli', label: 'Pembeli', icon: HiShoppingBag, desc: 'Beli hasil pertanian' },
-    ];
+
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 flex items-center justify-center p-4">
@@ -51,7 +47,7 @@ const Register = () => {
 
                 <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8">
                     <h2 className="text-xl font-bold text-surface-800 mb-1">Daftar</h2>
-                    <p className="text-surface-500 text-sm mb-6">Pilih peran dan buat akun</p>
+                    <p className="text-surface-500 text-sm mb-6">Buat akun untuk mulai berbelanja di AgriChain</p>
 
                     {error && (
                         <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg">
@@ -60,26 +56,7 @@ const Register = () => {
                     )}
 
                     <form onSubmit={handleSubmit} className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-medium text-surface-700 mb-2">Pilih Peran</label>
-                            <div className="grid grid-cols-3 gap-2">
-                                {roles.map((r) => (
-                                    <button
-                                        key={r.value}
-                                        type="button"
-                                        onClick={() => setRole(r.value)}
-                                        className={`flex flex-col items-center gap-1 p-3 rounded-xl border-2 transition-all duration-200 ${role === r.value
-                                            ? 'border-primary-500 bg-primary-50 shadow-sm'
-                                            : 'border-surface-200 hover:border-surface-300'
-                                            }`}
-                                    >
-                                        <r.icon className={`w-6 h-6 ${role === r.value ? 'text-primary-600' : 'text-surface-400'}`} />
-                                        <span className="text-xs font-semibold text-surface-700">{r.label}</span>
-                                        <span className="text-[10px] text-surface-400 leading-tight text-center">{r.desc}</span>
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
+
 
                         <div>
                             <label className="block text-sm font-medium text-surface-700 mb-1.5">Nama Lengkap</label>

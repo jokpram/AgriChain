@@ -14,6 +14,9 @@ const Users = () => {
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('');
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [newUserData, setNewUserData] = useState({ name: '', email: '', password: '', role: 'petani' });
+    const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => {
         fetchUsers();
@@ -28,6 +31,21 @@ const Users = () => {
             console.error(err);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleAddUser = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setSubmitting(true);
+        try {
+            await api.post('/admin/users', newUserData);
+            setIsAddModalOpen(false);
+            setNewUserData({ name: '', email: '', password: '', role: 'petani' });
+            fetchUsers();
+        } catch (err: any) {
+            alert(err.response?.data?.message || 'Gagal menambahkan user');
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -54,16 +72,24 @@ const Users = () => {
                     <h1 className="text-2xl font-bold text-surface-800">Manajemen Users</h1>
                     <p className="text-surface-500 text-sm mt-1">Kelola semua user dalam sistem</p>
                 </div>
-                <select
-                    value={filter}
-                    onChange={(e) => setFilter(e.target.value)}
-                    className="px-3 py-2 border border-surface-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none"
-                >
-                    <option value="">Semua Role</option>
-                    <option value="petani">Petani</option>
-                    <option value="distributor">Distributor</option>
-                    <option value="pembeli">Pembeli</option>
-                </select>
+                <div className="flex items-center gap-3">
+                    <select
+                        value={filter}
+                        onChange={(e) => setFilter(e.target.value)}
+                        className="px-3 py-2 border border-surface-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none"
+                    >
+                        <option value="">Semua Role</option>
+                        <option value="petani">Petani</option>
+                        <option value="distributor">Distributor</option>
+                        <option value="pembeli">Pembeli</option>
+                    </select>
+                    <button
+                        onClick={() => setIsAddModalOpen(true)}
+                        className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-medium hover:bg-primary-700 transition"
+                    >
+                        Tambah Pengguna
+                    </button>
+                </div>
             </div>
 
             <div className="bg-white rounded-xl border border-surface-200 overflow-hidden shadow-sm">
@@ -123,6 +149,75 @@ const Users = () => {
                     </div>
                 )}
             </div>
+            {isAddModalOpen && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+                    <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
+                        <h2 className="text-xl font-bold text-surface-800 mb-4">Tambah Pengguna Baru</h2>
+                        <form onSubmit={handleAddUser} className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-surface-700 mb-1">Nama Lengkap</label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={newUserData.name}
+                                    onChange={(e) => setNewUserData({ ...newUserData, name: e.target.value })}
+                                    className="w-full px-3 py-2 border border-surface-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-surface-700 mb-1">Email</label>
+                                <input
+                                    type="email"
+                                    required
+                                    value={newUserData.email}
+                                    onChange={(e) => setNewUserData({ ...newUserData, email: e.target.value })}
+                                    className="w-full px-3 py-2 border border-surface-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-surface-700 mb-1">Password</label>
+                                <input
+                                    type="password"
+                                    required
+                                    minLength={6}
+                                    value={newUserData.password}
+                                    onChange={(e) => setNewUserData({ ...newUserData, password: e.target.value })}
+                                    className="w-full px-3 py-2 border border-surface-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-surface-700 mb-1">Role</label>
+                                <select
+                                    value={newUserData.role}
+                                    onChange={(e) => setNewUserData({ ...newUserData, role: e.target.value })}
+                                    className="w-full px-3 py-2 border border-surface-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none"
+                                >
+                                    <option value="petani">Petani</option>
+                                    <option value="distributor">Distributor</option>
+                                    <option value="pembeli">Pembeli</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                            </div>
+                            <div className="flex items-center justify-end gap-3 mt-6">
+                                <button
+                                    type="button"
+                                    onClick={() => setIsAddModalOpen(false)}
+                                    className="px-4 py-2 text-surface-600 hover:bg-surface-100 rounded-lg text-sm font-medium transition"
+                                >
+                                    Batal
+                                </button>
+                                <button
+                                    type="submit"
+                                    disabled={submitting}
+                                    className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-medium hover:bg-primary-700 transition disabled:opacity-50"
+                                >
+                                    {submitting ? 'Menyimpan...' : 'Simpan'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

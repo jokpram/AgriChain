@@ -38,6 +38,44 @@ const getDashboardStats = async (req, res, next) => {
     }
 };
 
+// Dashboard stats
+// ... (existing getDashboardStats)
+// Create new user (Admin only)
+const createUser = async (req, res, next) => {
+    try {
+        const { name, email, password, role } = req.body;
+
+        if (!name || !email || !password || !role) {
+            return res.status(400).json({ success: false, message: 'Semua field harus diisi' });
+        }
+
+        if (!['petani', 'distributor', 'pembeli', 'admin'].includes(role)) {
+            return res.status(400).json({ success: false, message: 'Role tidak valid' });
+        }
+
+        const existingUser = await User.findOne({ where: { email } });
+        if (existingUser) {
+            return res.status(400).json({ success: false, message: 'Email sudah terdaftar' });
+        }
+
+        const user = await User.create({ name, email, password, role });
+
+        await ActivityLog.create({
+            user_id: req.user.id, // Admin ID
+            action: 'USER_CREATED',
+            description: `Admin menambahkan pengguna baru: ${name} (${role})`
+        });
+
+        res.status(201).json({
+            success: true,
+            message: 'Pengguna berhasil dibuat',
+            data: { id: user.id, name: user.name, email: user.email, role: user.role }
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 // List all users
 const getUsers = async (req, res, next) => {
     try {
@@ -140,4 +178,4 @@ const getActivityLogs = async (req, res, next) => {
     }
 };
 
-module.exports = { getDashboardStats, getUsers, updateUserStatus, getAllBatches, getAllDistributions, getActivityLogs };
+module.exports = { getDashboardStats, getUsers, createUser, updateUserStatus, getAllBatches, getAllDistributions, getActivityLogs };
