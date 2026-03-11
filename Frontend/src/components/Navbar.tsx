@@ -36,6 +36,13 @@ const Navbar = ({ onMenuToggle }: NavbarProps) => {
         pembeli: 'bg-amber-100 text-amber-700'
     };
 
+    const rolePathBase: Record<string, string> = {
+        admin: 'admin',
+        petani: 'farmer',
+        distributor: 'distributor',
+        pembeli: 'buyer'
+    };
+
     return (
         <nav className="bg-white border-b border-surface-200 sticky top-0 z-40 backdrop-blur-sm bg-white/95">
             <div className="flex items-center justify-between h-16 px-4 md:px-6">
@@ -74,7 +81,7 @@ const Navbar = ({ onMenuToggle }: NavbarProps) => {
 
                             <div className="flex bg-surface-100 rounded-lg p-0.5 ml-2">
                                 <Link
-                                    to={`/${user.role}/profile`}
+                                    to={`/${rolePathBase[user.role] || user.role}/profile`}
                                     title="Pengaturan Profil"
                                     className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-surface-600 hover:bg-white hover:text-primary-600 hover:shadow-sm rounded-md transition-all duration-200"
                                 >

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import { HiGlobeAsiaAustralia } from 'react-icons/hi2';
+import { HiGlobeAsiaAustralia, HiHome } from 'react-icons/hi2';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -57,7 +57,14 @@ const Login = () => {
                     <p className="text-primary-200 text-sm">Traceability System</p>
                 </div>
 
-                <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8">
+                <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8 relative">
+                    <Link
+                        to="/"
+                        className="absolute top-6 right-6 p-2 text-surface-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
+                        title="Kembali ke Beranda"
+                    >
+                        <HiHome className="w-5 h-5" />
+                    </Link>
                     <h2 className="text-xl font-bold text-surface-800 mb-1">Selamat Datang!</h2>
                     <p className="text-surface-500 text-sm mb-6">Masuk ke akun Anda</p>
 
