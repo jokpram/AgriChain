@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { HiShieldCheck, HiGlobeAsiaAustralia, HiCubeTransparent, HiChartBar } from 'react-icons/hi2';
+import { HiShieldCheck, HiCubeTransparent, HiChartBar } from 'react-icons/hi2';
+import { FaLeaf } from 'react-icons/fa';
 
 const LandingPage = () => {
     return (
@@ -10,7 +11,7 @@ const LandingPage = () => {
                     <div className="flex justify-between items-center h-20">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/30">
-                                <span className="text-white font-bold text-lg">AC</span>
+                                <FaLeaf className="w-5 h-5 text-white" />
                             </div>
                             <span className="text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-primary-700 to-primary-900 tracking-tight">
                                 AgriChain
@@ -66,7 +67,7 @@ const LandingPage = () => {
                         {/* Feature 1 */}
                         <div className="bg-surface-50 p-8 rounded-3xl border border-surface-100 hover:border-primary-100 hover:shadow-xl hover:shadow-primary-100/50 transition-all duration-300 group">
                             <div className="w-14 h-14 bg-primary-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                                <HiGlobeAsiaAustralia className="w-7 h-7 text-primary-600" />
+                                <FaLeaf className="w-7 h-7 text-primary-600" />
                             </div>
                             <h3 className="text-xl font-bold text-surface-900 mb-3">Pelacakan Tiap Tahap</h3>
                             <p className="text-surface-600 leading-relaxed text-sm">Pantau asal-usul produk dan siklus hidupnya di setiap tahap perjalanan distribusi.</p>
@@ -120,7 +121,7 @@ const LandingPage = () => {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
                     <div className="flex items-center gap-3">
                         <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-primary-600">
-                            <span className="text-white font-bold text-xs">AC</span>
+                            <FaLeaf className="w-4 h-4 text-white" />
                         </div>
                         <span className="text-xl font-bold text-white">AgriChain</span>
                     </div>
