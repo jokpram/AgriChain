@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { HiGlobeAsiaAustralia } from 'react-icons/hi2';
 
@@ -10,6 +10,15 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
     const { login } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
+    const [successMsg, setSuccessMsg] = useState('');
+
+    useEffect(() => {
+        if (location.state?.message) {
+            setSuccessMsg(location.state.message);
+            window.history.replaceState({}, document.title);
+        }
+    }, [location]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -44,7 +53,7 @@ const Login = () => {
                     <div className="w-16 h-16 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
                         <HiGlobeAsiaAustralia className="w-8 h-8 text-white" />
                     </div>
-                    <h1 className="text-3xl font-bold text-white mb-1">AgriBatch</h1>
+                    <h1 className="text-3xl font-bold text-white mb-1">AgriChain</h1>
                     <p className="text-primary-200 text-sm">Traceability System</p>
                 </div>
 
@@ -55,6 +64,11 @@ const Login = () => {
                     {error && (
                         <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg">
                             {error}
+                        </div>
+                    )}
+                    {successMsg && (
+                        <div className="mb-4 p-3 bg-green-50 border border-green-200 text-green-600 text-sm rounded-lg">
+                            {successMsg}
                         </div>
                     )}
 

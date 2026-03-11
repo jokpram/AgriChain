@@ -19,12 +19,7 @@ const Register = () => {
         setLoading(true);
         try {
             await register(name, email, password, role);
-            const routes: Record<string, string> = {
-                petani: '/farmer/dashboard',
-                distributor: '/distributor/dashboard',
-                pembeli: '/buyer/marketplace',
-            };
-            navigate(routes[role] || '/');
+            navigate('/login', { state: { message: 'Registrasi berhasil. Silakan masuk.' } });
         } catch (err: any) {
             setError(err.response?.data?.message || 'Registration failed');
         } finally {
@@ -50,7 +45,7 @@ const Register = () => {
                     <div className="w-16 h-16 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
                         <HiGlobeAsiaAustralia className="w-8 h-8 text-white" />
                     </div>
-                    <h1 className="text-3xl font-bold text-white mb-1">AgriBatch</h1>
+                    <h1 className="text-3xl font-bold text-white mb-1">AgriChain</h1>
                     <p className="text-primary-200 text-sm">Buat Akun Baru</p>
                 </div>
 

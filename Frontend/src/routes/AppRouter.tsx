@@ -5,6 +5,9 @@ import ProtectedRoute from '../components/ProtectedRoute';
 import Sidebar from '../components/Sidebar';
 import { HiShieldExclamation } from 'react-icons/hi2';
 
+// Public Pages
+import LandingPage from '../pages/public/LandingPage';
+
 // Auth Pages
 import Login from '../pages/auth/Login';
 import Register from '../pages/auth/Register';
@@ -19,15 +22,21 @@ import FarmerDashboard from '../pages/farmer/Dashboard';
 import Farms from '../pages/farmer/Farms';
 import Harvest from '../pages/farmer/Harvest';
 import MyBatches from '../pages/farmer/MyBatches';
+import Products from '../pages/farmer/Products';
+import Withdrawals from '../pages/farmer/Withdrawals';
 
 // Distributor Pages
 import DistributorDashboard from '../pages/distributor/Dashboard';
 import AvailableBatches from '../pages/distributor/AvailableBatches';
 import Distribution from '../pages/distributor/Distribution';
+import DistributorSettings from '../pages/distributor/Settings';
 
 // Buyer Pages
 import Marketplace from '../pages/buyer/Marketplace';
 import Orders from '../pages/buyer/Orders';
+
+// Shared Pages
+import Profile from '../pages/shared/Profile';
 
 const Unauthorized = () => (
     <div className="min-h-screen flex items-center justify-center bg-surface-50">
@@ -49,6 +58,7 @@ const AppRouter = () => {
                 <ToastProvider>
                     <Routes>
                         {/* Public routes */}
+                        <Route path="/" element={<LandingPage />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
                         <Route path="/unauthorized" element={<Unauthorized />} />
@@ -58,6 +68,7 @@ const AppRouter = () => {
                             <Route path="dashboard" element={<AdminDashboard />} />
                             <Route path="users" element={<Users />} />
                             <Route path="batches" element={<AdminBatches />} />
+                            <Route path="profile" element={<Profile />} />
                             <Route index element={<Navigate to="dashboard" replace />} />
                         </Route>
 
@@ -67,14 +78,18 @@ const AppRouter = () => {
                             <Route path="farms" element={<Farms />} />
                             <Route path="harvest" element={<Harvest />} />
                             <Route path="batches" element={<MyBatches />} />
+                            <Route path="products" element={<Products />} />
+                            <Route path="withdrawals" element={<Withdrawals />} />
+                            <Route path="profile" element={<Profile />} />
                             <Route index element={<Navigate to="dashboard" replace />} />
                         </Route>
 
-                        {/* Distributor routes */}
                         <Route path="/distributor" element={<ProtectedRoute roles={['distributor']}><Sidebar /></ProtectedRoute>}>
                             <Route path="dashboard" element={<DistributorDashboard />} />
                             <Route path="available" element={<AvailableBatches />} />
                             <Route path="distributions" element={<Distribution />} />
+                            <Route path="settings" element={<DistributorSettings />} />
+                            <Route path="profile" element={<Profile />} />
                             <Route index element={<Navigate to="dashboard" replace />} />
                         </Route>
 
@@ -82,12 +97,12 @@ const AppRouter = () => {
                         <Route path="/buyer" element={<ProtectedRoute roles={['pembeli']}><Sidebar /></ProtectedRoute>}>
                             <Route path="marketplace" element={<Marketplace />} />
                             <Route path="orders" element={<Orders />} />
+                            <Route path="profile" element={<Profile />} />
                             <Route index element={<Navigate to="marketplace" replace />} />
                         </Route>
 
-                        {/* Redirect root */}
-                        <Route path="/" element={<Navigate to="/login" replace />} />
-                        <Route path="*" element={<Navigate to="/login" replace />} />
+                        {/* Redirect unknown routes */}
+                        <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>
                 </ToastProvider>
             </AuthProvider>

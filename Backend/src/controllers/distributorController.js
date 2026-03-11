@@ -103,4 +103,30 @@ const getDashboard = async (req, res, next) => {
     }
 };
 
-module.exports = { getAvailableBatches, pickupBatch, updateStatus, getDistributions, getDashboard };
+// Get settings
+const getSettings = async (req, res, next) => {
+    try {
+        const user = await User.findByPk(req.user.id, { attributes: ['delivery_fee_per_km'] });
+        res.json({ success: true, data: user });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Update settings
+const updateSettings = async (req, res, next) => {
+    try {
+        const { delivery_fee_per_km } = req.body;
+
+        await User.update(
+            { delivery_fee_per_km },
+            { where: { id: req.user.id } }
+        );
+
+        res.json({ success: true, message: 'Settings updated successfully' });
+    } catch (error) {
+        next(error);
+    }
+};
+
+module.exports = { getAvailableBatches, pickupBatch, updateStatus, getDistributions, getDashboard, getSettings, updateSettings };

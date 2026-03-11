@@ -19,7 +19,7 @@ const startServer = async () => {
 
         // Start server
         app.listen(PORT, () => {
-            console.log(`🚀 AgriBatch server running on port ${PORT}`);
+            console.log(`🚀 AgriChain server running on port ${PORT}`);
             console.log(`📡 API: http://localhost:${PORT}/api`);
         });
     } catch (error) {

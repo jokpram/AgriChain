@@ -141,4 +141,17 @@ const getDashboard = async (req, res, next) => {
     }
 };
 
-module.exports = { getAvailableBatches, getBatchTrace, createOrder, getOrders, getDashboard };
+// Get available distributors
+const getDistributors = async (req, res, next) => {
+    try {
+        const distributors = await User.findAll({
+            where: { role: 'distributor', status: 'active' },
+            attributes: ['id', 'name', 'email', 'delivery_fee_per_km']
+        });
+        res.json({ success: true, data: distributors });
+    } catch (error) {
+        next(error);
+    }
+};
+
+module.exports = { getAvailableBatches, getBatchTrace, createOrder, getOrders, getDashboard, getDistributors };

@@ -83,12 +83,28 @@ const getCultivationLogs = async (req, res, next) => {
 // Create batch (harvest)
 const createBatch = async (req, res, next) => {
     try {
-        const { commodity_id, harvest_date, quantity, unit } = req.body;
-        if (!commodity_id || !harvest_date || !quantity) {
-            return res.status(400).json({ success: false, message: 'commodity_id, harvest_date, and quantity are required' });
+        const { commodity_id, farm_id, harvest_date, quantity, unit, seed_origin, planting_date, price_per_unit } = req.body;
+        if (!commodity_id || !farm_id || !harvest_date || !quantity || !seed_origin || !planting_date || !price_per_unit) {
+            return res.status(400).json({ success: false, message: 'Missing required fields for batch creation' });
         }
 
-        const batch = await BatchService.createBatch(req.user.id, commodity_id, harvest_date, quantity, unit);
+        // Verify that the specified farm belongs to this farmer
+        const farm = await Farm.findOne({ where: { id: farm_id, farmer_id: req.user.id } });
+        if (!farm) {
+            return res.status(404).json({ success: false, message: 'Farm not found or does not belong to you' });
+        }
+
+        const batch = await BatchService.createBatch(
+            req.user.id,
+            commodity_id,
+            farm_id,
+            harvest_date,
+            quantity,
+            unit,
+            seed_origin,
+            planting_date,
+            price_per_unit
+        );
 
         await ActivityLog.create({
             user_id: req.user.id,

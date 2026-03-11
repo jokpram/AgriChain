@@ -1,4 +1,4 @@
-import { createContext, useState, useCallback, ReactNode } from 'react';
+import { createContext, useState, useCallback, ReactNode, useContext } from 'react';
 import { HiCheckCircle, HiXCircle, HiExclamationTriangle, HiInformationCircle, HiXMark } from 'react-icons/hi2';
 
 type ToastType = 'success' | 'error' | 'warning' | 'info';
@@ -11,6 +11,7 @@ interface Toast {
 
 interface ToastContextType {
     showToast: (message: string, type?: ToastType) => void;
+    showConfirm: (message: string, onConfirm: () => void, onCancel?: () => void) => void;
 }
 
 export const ToastContext = createContext<ToastContextType>({} as ToastContextType);
@@ -31,6 +32,12 @@ const colorMap: Record<ToastType, { bg: string; border: string; icon: string; te
 
 export const ToastProvider = ({ children }: { children: ReactNode }) => {
     const [toasts, setToasts] = useState<Toast[]>([]);
+    const [confirmDialog, setConfirmDialog] = useState<{
+        isOpen: boolean;
+        message: string;
+        onConfirm: () => void;
+        onCancel?: () => void;
+    }>({ isOpen: false, message: '', onConfirm: () => { } });
 
     const showToast = useCallback((message: string, type: ToastType = 'info') => {
         const id = Date.now().toString() + Math.random().toString(36).slice(2);
@@ -44,8 +51,24 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
         setToasts((prev) => prev.filter((t) => t.id !== id));
     };
 
+    const showConfirm = useCallback((message: string, onConfirm: () => void, onCancel?: () => void) => {
+        setConfirmDialog({ isOpen: true, message, onConfirm, onCancel });
+    }, []);
+
+    const handleConfirm = () => {
+        confirmDialog.onConfirm();
+        setConfirmDialog({ ...confirmDialog, isOpen: false });
+    };
+
+    const handleCancel = () => {
+        if (confirmDialog.onCancel) {
+            confirmDialog.onCancel();
+        }
+        setConfirmDialog({ ...confirmDialog, isOpen: false });
+    };
+
     return (
-        <ToastContext.Provider value={{ showToast }}>
+        <ToastContext.Provider value={{ showToast, showConfirm }}>
             {children}
 
             {/* Toast Container */}
@@ -72,6 +95,35 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
                 })}
             </div>
 
+            {/* Confirm Dialog Modal */}
+            {confirmDialog.isOpen && (
+                <div className="fixed inset-0 z-[9999] bg-surface-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+                    <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 animate-[slideIn_0.3s_ease-out]">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center shrink-0">
+                                <HiExclamationTriangle className="w-6 h-6 text-amber-600" />
+                            </div>
+                            <h3 className="text-lg font-bold text-surface-900">Konfirmasi</h3>
+                        </div>
+                        <p className="text-surface-600 mb-6">{confirmDialog.message}</p>
+                        <div className="flex gap-3 justify-end">
+                            <button
+                                onClick={handleCancel}
+                                className="px-4 py-2 rounded-xl text-surface-600 font-medium hover:bg-surface-100 transition-colors"
+                            >
+                                Batal
+                            </button>
+                            <button
+                                onClick={handleConfirm}
+                                className="px-4 py-2 rounded-xl bg-primary-600 text-white font-medium hover:bg-primary-700 transition-colors shadow-md shadow-primary-500/20"
+                            >
+                                Ya, Lanjutkan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Keyframes */}
             <style>{`
         @keyframes slideIn {
@@ -82,3 +134,5 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
         </ToastContext.Provider>
     );
 };
+
+export const useToast = () => useContext(ToastContext);

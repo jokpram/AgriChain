@@ -7,6 +7,8 @@ const CultivationLog = require('./cultivationLog');
 const Distribution = require('./distribution');
 const Order = require('./order');
 const ActivityLog = require('./activityLog');
+const Product = require('./product');
+const Withdrawal = require('./withdrawal');
 
 // ===== Associations =====
 
@@ -21,6 +23,10 @@ Batch.belongsTo(User, { foreignKey: 'farmer_id', as: 'farmer' });
 // Commodity <-> Batch
 Commodity.hasMany(Batch, { foreignKey: 'commodity_id', as: 'batches' });
 Batch.belongsTo(Commodity, { foreignKey: 'commodity_id', as: 'commodity' });
+
+// Farm <-> Batch
+Farm.hasMany(Batch, { foreignKey: 'farm_id', as: 'batches' });
+Batch.belongsTo(Farm, { foreignKey: 'farm_id', as: 'farm' });
 
 // Farm <-> CultivationLog
 Farm.hasMany(CultivationLog, { foreignKey: 'farm_id', as: 'cultivationLogs' });
@@ -50,6 +56,22 @@ Order.belongsTo(User, { foreignKey: 'buyer_id', as: 'buyer' });
 User.hasMany(ActivityLog, { foreignKey: 'user_id', as: 'activityLogs' });
 ActivityLog.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 
+// User <-> Product
+User.hasMany(Product, { foreignKey: 'farmer_id', as: 'products' });
+Product.belongsTo(User, { foreignKey: 'farmer_id', as: 'farmer' });
+
+// Batch <-> Product
+Batch.hasMany(Product, { foreignKey: 'batch_id', as: 'products' });
+Product.belongsTo(Batch, { foreignKey: 'batch_id', as: 'batch' });
+
+// Product <-> Order
+Product.hasMany(Order, { foreignKey: 'product_id', as: 'orders' });
+Order.belongsTo(Product, { foreignKey: 'product_id', as: 'product' });
+
+// User <-> Withdrawal
+User.hasMany(Withdrawal, { foreignKey: 'farmer_id', as: 'withdrawals' });
+Withdrawal.belongsTo(User, { foreignKey: 'farmer_id', as: 'farmer' });
+
 module.exports = {
     sequelize,
     User,
@@ -59,5 +81,7 @@ module.exports = {
     CultivationLog,
     Distribution,
     Order,
-    ActivityLog
+    ActivityLog,
+    Product,
+    Withdrawal
 };

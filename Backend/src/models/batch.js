@@ -22,6 +22,11 @@ const Batch = sequelize.define('Batch', {
         allowNull: false,
         references: { model: 'commodities', key: 'id' }
     },
+    farm_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: { model: 'farms', key: 'id' }
+    },
     harvest_date: {
         type: DataTypes.DATEONLY,
         allowNull: false
@@ -33,6 +38,18 @@ const Batch = sequelize.define('Batch', {
     unit: {
         type: DataTypes.STRING,
         defaultValue: 'kg'
+    },
+    seed_origin: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    planting_date: {
+        type: DataTypes.DATEONLY,
+        allowNull: false
+    },
+    price_per_unit: {
+        type: DataTypes.FLOAT,
+        allowNull: false
     },
     status: {
         type: DataTypes.ENUM('available', 'distributed', 'sold'),

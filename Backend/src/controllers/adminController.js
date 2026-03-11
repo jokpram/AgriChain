@@ -10,8 +10,13 @@ const getDashboardStats = async (req, res, next) => {
         const totalBatches = await Batch.count();
         const totalDistributions = await Distribution.count();
         const totalOrders = await Order.count();
+        const totalProducts = await Product.count();
         const activeBatches = await Batch.count({ where: { status: 'available' } });
         const totalUsers = await User.count({ where: { role: { [Op.ne]: 'admin' } } });
+
+        // Calculate Total Revenue (only paid orders)
+        const revenueResult = await Order.sum('price', { where: { payment_status: 'paid' } });
+        const totalRevenue = revenueResult || 0;
 
         res.json({
             success: true,
@@ -23,7 +28,9 @@ const getDashboardStats = async (req, res, next) => {
                 totalBatches,
                 activeBatches,
                 totalDistributions,
-                totalOrders
+                totalOrders,
+                totalProducts,
+                totalRevenue
             }
         });
     } catch (error) {

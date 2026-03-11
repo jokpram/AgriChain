@@ -11,6 +11,8 @@ interface Stats {
     activeBatches: number;
     totalDistributions: number;
     totalOrders: number;
+    totalProducts: number;
+    totalRevenue: number;
 }
 
 const AdminDashboard = () => {
@@ -34,10 +36,11 @@ const AdminDashboard = () => {
     if (loading) return <div className="flex items-center justify-center h-64"><div className="w-8 h-8 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin" /></div>;
 
     const statCards = [
-        { label: 'Total Petani', value: stats?.totalFarmers || 0, icon: HiUsers, color: 'from-green-500 to-emerald-600', iconBg: 'bg-green-100 text-green-600' },
-        { label: 'Total Batch', value: stats?.totalBatches || 0, icon: HiCube, color: 'from-blue-500 to-indigo-600', iconBg: 'bg-blue-100 text-blue-600' },
+        { label: 'Pendapatan Bersih', value: `Rp ${stats?.totalRevenue?.toLocaleString('id-ID') || 0}`, icon: HiBanknotes, color: 'from-amber-400 to-orange-500', iconBg: 'bg-amber-100 text-amber-600' },
+        { label: 'Total Pengguna', value: stats?.totalUsers || 0, icon: HiUsers, color: 'from-green-500 to-emerald-600', iconBg: 'bg-green-100 text-green-600' },
+        { label: 'Total Produk', value: stats?.totalProducts || 0, icon: HiCube, color: 'from-blue-500 to-indigo-600', iconBg: 'bg-blue-100 text-blue-600' },
         { label: 'Total Distribusi', value: stats?.totalDistributions || 0, icon: HiTruck, color: 'from-purple-500 to-violet-600', iconBg: 'bg-purple-100 text-purple-600' },
-        { label: 'Total Transaksi', value: stats?.totalOrders || 0, icon: HiBanknotes, color: 'from-amber-500 to-orange-600', iconBg: 'bg-amber-100 text-amber-600' },
+        { label: 'Total Transaksi', value: stats?.totalOrders || 0, icon: HiBanknotes, color: 'from-amber-600 to-orange-700', iconBg: 'bg-orange-100 text-orange-600' },
     ];
 
     const barData = [
@@ -52,7 +55,7 @@ const AdminDashboard = () => {
         <div className="space-y-6">
             <div>
                 <h1 className="text-2xl font-bold text-surface-800">Dashboard Admin</h1>
-                <p className="text-surface-500 text-sm mt-1">Ringkasan sistem AgriBatch Traceability</p>
+                <p className="text-surface-500 text-sm mt-1">Ringkasan sistem AgriChain Traceability</p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -62,11 +65,10 @@ const AdminDashboard = () => {
                             <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${card.iconBg}`}>
                                 <card.icon className="w-5 h-5" />
                             </div>
-                            <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${card.color} flex items-center justify-center shadow-sm`}>
-                                <span className="text-white font-bold text-sm">{card.value}</span>
-                            </div>
                         </div>
-                        <p className="text-2xl font-bold text-surface-800">{card.value}</p>
+                        <p className={`font-bold text-surface-800 ${typeof card.value === 'string' && card.value.startsWith('Rp') ? 'text-xl md:text-2xl mt-5' : 'text-2xl mt-5'}`}>
+                            {card.value}
+                        </p>
                         <p className="text-xs text-surface-500 mt-1">{card.label}</p>
                     </div>
                 ))}

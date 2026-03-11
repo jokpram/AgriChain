@@ -2,7 +2,7 @@ const { Batch, Commodity } = require('../models');
 const { generateBatchCode } = require('../utils/batchGenerator');
 
 class BatchService {
-    static async createBatch(farmerId, commodityId, harvestDate, quantity, unit = 'kg') {
+    static async createBatch(farmerId, commodityId, farmId, harvestDate, quantity, unit = 'kg', seedOrigin, plantingDate, pricePerUnit) {
         const commodity = await Commodity.findByPk(commodityId);
         if (!commodity) {
             throw Object.assign(new Error('Commodity not found'), { statusCode: 404 });
@@ -28,9 +28,13 @@ class BatchService {
             batch_code: batchCode,
             farmer_id: farmerId,
             commodity_id: commodityId,
+            farm_id: farmId,
             harvest_date: harvestDate,
             quantity,
             unit,
+            seed_origin: seedOrigin,
+            planting_date: plantingDate,
+            price_per_unit: pricePerUnit,
             status: 'available'
         });
 
@@ -40,7 +44,10 @@ class BatchService {
     static async getBatchesByFarmer(farmerId) {
         return Batch.findAll({
             where: { farmer_id: farmerId },
-            include: [{ model: Commodity, as: 'commodity' }],
+            include: [
+                { model: Commodity, as: 'commodity' },
+                { model: require('../models/farm'), as: 'farm' }
+            ],
             order: [['created_at', 'DESC']]
         });
     }
@@ -50,7 +57,8 @@ class BatchService {
             where: { status: 'available' },
             include: [
                 { model: Commodity, as: 'commodity' },
-                { model: require('../models/user'), as: 'farmer', attributes: ['id', 'name', 'email'] }
+                { model: require('../models/user'), as: 'farmer', attributes: ['id', 'name', 'email'] },
+                { model: require('../models/farm'), as: 'farm' }
             ],
             order: [['created_at', 'DESC']]
         });

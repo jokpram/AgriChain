@@ -66,59 +66,61 @@ const Users = () => {
                 </select>
             </div>
 
-            <div className="bg-white rounded-xl border border-surface-200 overflow-hidden">
+            <div className="bg-white rounded-xl border border-surface-200 overflow-hidden shadow-sm">
                 {loading ? (
                     <div className="flex items-center justify-center h-40"><div className="w-8 h-8 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin" /></div>
                 ) : (
-                    <table className="w-full">
-                        <thead>
-                            <tr className="bg-surface-50 border-b border-surface-200">
-                                <th className="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase">Nama</th>
-                                <th className="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase">Email</th>
-                                <th className="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase">Role</th>
-                                <th className="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase">Status</th>
-                                <th className="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase">Tanggal</th>
-                                <th className="text-right px-5 py-3 text-xs font-semibold text-surface-500 uppercase">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {users.map((user) => (
-                                <tr key={user.id} className="border-b border-surface-100 hover:bg-surface-50 transition-colors">
-                                    <td className="px-5 py-3.5 text-sm font-medium text-surface-800">{user.name}</td>
-                                    <td className="px-5 py-3.5 text-sm text-surface-600">{user.email}</td>
-                                    <td className="px-5 py-3.5">
-                                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${roleBadge[user.role] || 'bg-surface-100 text-surface-600'}`}>
-                                            {user.role}
-                                        </span>
-                                    </td>
-                                    <td className="px-5 py-3.5">
-                                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${user.status === 'active' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
-                                            }`}>
-                                            <span className={`w-1.5 h-1.5 rounded-full ${user.status === 'active' ? 'bg-green-500' : 'bg-red-500'}`} />
-                                            {user.status === 'active' ? 'Aktif' : 'Suspended'}
-                                        </span>
-                                    </td>
-                                    <td className="px-5 py-3.5 text-sm text-surface-500">
-                                        {new Date(user.created_at).toLocaleDateString('id-ID')}
-                                    </td>
-                                    <td className="px-5 py-3.5 text-right">
-                                        <button
-                                            onClick={() => toggleStatus(user.id, user.status)}
-                                            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${user.status === 'active'
+                    <div className="overflow-x-auto">
+                        <table className="w-full min-w-[800px]">
+                            <thead>
+                                <tr className="bg-surface-50 border-b border-surface-200">
+                                    <th className="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase whitespace-nowrap">Nama</th>
+                                    <th className="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase whitespace-nowrap">Email</th>
+                                    <th className="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase whitespace-nowrap">Role</th>
+                                    <th className="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase whitespace-nowrap">Status</th>
+                                    <th className="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase whitespace-nowrap">Tanggal</th>
+                                    <th className="text-right px-5 py-3 text-xs font-semibold text-surface-500 uppercase whitespace-nowrap">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {users.map((user) => (
+                                    <tr key={user.id} className="border-b border-surface-100 hover:bg-surface-50 transition-colors">
+                                        <td className="px-5 py-3.5 text-sm font-medium text-surface-800 whitespace-nowrap">{user.name}</td>
+                                        <td className="px-5 py-3.5 text-sm text-surface-600 whitespace-nowrap">{user.email}</td>
+                                        <td className="px-5 py-3.5 whitespace-nowrap">
+                                            <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${roleBadge[user.role] || 'bg-surface-100 text-surface-600'}`}>
+                                                {user.role}
+                                            </span>
+                                        </td>
+                                        <td className="px-5 py-3.5 whitespace-nowrap">
+                                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${user.status === 'active' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
+                                                }`}>
+                                                <span className={`w-1.5 h-1.5 rounded-full ${user.status === 'active' ? 'bg-green-500' : 'bg-red-500'}`} />
+                                                {user.status === 'active' ? 'Aktif' : 'Suspended'}
+                                            </span>
+                                        </td>
+                                        <td className="px-5 py-3.5 text-sm text-surface-500 whitespace-nowrap">
+                                            {new Date(user.created_at).toLocaleDateString('id-ID')}
+                                        </td>
+                                        <td className="px-5 py-3.5 text-right whitespace-nowrap">
+                                            <button
+                                                onClick={() => toggleStatus(user.id, user.status)}
+                                                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${user.status === 'active'
                                                     ? 'bg-red-50 text-red-600 hover:bg-red-100'
                                                     : 'bg-green-50 text-green-600 hover:bg-green-100'
-                                                }`}
-                                        >
-                                            {user.status === 'active' ? 'Suspend' : 'Aktifkan'}
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                            {users.length === 0 && (
-                                <tr><td colSpan={6} className="px-5 py-10 text-center text-surface-400 text-sm">Tidak ada user ditemukan</td></tr>
-                            )}
-                        </tbody>
-                    </table>
+                                                    }`}
+                                            >
+                                                {user.status === 'active' ? 'Suspend' : 'Aktifkan'}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                                {users.length === 0 && (
+                                    <tr><td colSpan={6} className="px-5 py-10 text-center text-surface-400 text-sm">Tidak ada user ditemukan</td></tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
                 )}
             </div>
         </div>

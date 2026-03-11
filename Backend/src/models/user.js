@@ -29,6 +29,11 @@ const User = sequelize.define('User', {
     status: {
         type: DataTypes.ENUM('active', 'suspended'),
         defaultValue: 'active'
+    },
+    delivery_fee_per_km: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+        defaultValue: 0
     }
 }, {
     tableName: 'users',

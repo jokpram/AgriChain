@@ -12,7 +12,9 @@ interface Distribution {
         batch_code: string;
         quantity: number;
         unit: string;
+        price_per_unit: number;
         commodity: { name: string };
+        farm: { farm_name: string };
     };
     distributionBuyer: { name: string; email: string } | null;
 }
@@ -72,53 +74,60 @@ const DistributionPage = () => {
                 <p className="text-surface-500 text-sm mt-1">Kelola dan lacak distribusi batch</p>
             </div>
 
-            <div className="bg-white rounded-xl border border-surface-200 overflow-hidden">
-                <table className="w-full">
-                    <thead>
-                        <tr className="bg-surface-50 border-b border-surface-200">
-                            <th className="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase">Batch</th>
-                            <th className="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase">Komoditas</th>
-                            <th className="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase">Kuantitas</th>
-                            <th className="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase">Status</th>
-                            <th className="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase">Tanggal Pickup</th>
-                            <th className="text-right px-5 py-3 text-xs font-semibold text-surface-500 uppercase">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {distributions.map((dist) => (
-                            <tr key={dist.id} className="border-b border-surface-100 hover:bg-surface-50 transition-colors">
-                                <td className="px-5 py-3.5">
-                                    <p className="text-sm font-bold text-surface-800 font-mono">{dist.batch?.batch_code}</p>
-                                </td>
-                                <td className="px-5 py-3.5 text-sm text-surface-600">{dist.batch?.commodity?.name}</td>
-                                <td className="px-5 py-3.5 text-sm text-surface-600">{dist.batch?.quantity} {dist.batch?.unit}</td>
-                                <td className="px-5 py-3.5">
-                                    <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${statusColors[dist.status] || 'bg-surface-100 text-surface-600'}`}>
-                                        {statusLabels[dist.status] || dist.status}
-                                    </span>
-                                </td>
-                                <td className="px-5 py-3.5 text-sm text-surface-500">
-                                    {dist.pickup_date ? new Date(dist.pickup_date).toLocaleDateString('id-ID') : '-'}
-                                </td>
-                                <td className="px-5 py-3.5 text-right">
-                                    {dist.status !== 'delivered' && (
-                                        <button
-                                            onClick={() => updateStatus(dist.id, dist.status)}
-                                            disabled={updatingId === dist.id}
-                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-600 text-xs font-medium rounded-lg hover:bg-blue-100 transition-colors disabled:opacity-60"
-                                        >
-                                            <HiArrowRight className="w-3 h-3" />
-                                            {updatingId === dist.id ? 'Updating...' : statusLabels[statusFlow[statusFlow.indexOf(dist.status) + 1]] || 'Next'}
-                                        </button>
-                                    )}
-                                </td>
+            <div className="bg-white rounded-xl border border-surface-200 overflow-hidden shadow-sm">
+                <div className="overflow-x-auto">
+                    <table className="w-full min-w-[900px]">
+                        <thead>
+                            <tr className="bg-surface-50 border-b border-surface-200">
+                                <th className="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase whitespace-nowrap">Batch</th>
+                                <th className="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase whitespace-nowrap">Asal</th>
+                                <th className="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase whitespace-nowrap">Komoditas</th>
+                                <th className="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase whitespace-nowrap">Kuantitas</th>
+                                <th className="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase whitespace-nowrap">Status</th>
+                                <th className="text-left px-5 py-3 text-xs font-semibold text-surface-500 uppercase whitespace-nowrap">Tanggal Pickup</th>
+                                <th className="text-right px-5 py-3 text-xs font-semibold text-surface-500 uppercase whitespace-nowrap">Aksi</th>
                             </tr>
-                        ))}
-                        {distributions.length === 0 && (
-                            <tr><td colSpan={6} className="px-5 py-10 text-center text-surface-400 text-sm">Belum ada distribusi</td></tr>
-                        )}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {distributions.map((dist) => (
+                                <tr key={dist.id} className="border-b border-surface-100 hover:bg-surface-50 transition-colors">
+                                    <td className="px-5 py-3.5 whitespace-nowrap">
+                                        <p className="text-sm font-bold text-surface-800 font-mono">{dist.batch?.batch_code}</p>
+                                    </td>
+                                    <td className="px-5 py-3.5 text-sm text-surface-600 truncate max-w-[150px] whitespace-nowrap">{dist.batch?.farm?.farm_name}</td>
+                                    <td className="px-5 py-3.5 text-sm text-surface-600 whitespace-nowrap">{dist.batch?.commodity?.name}</td>
+                                    <td className="px-5 py-3.5 text-sm text-surface-600 whitespace-nowrap">
+                                        {dist.batch?.quantity} {dist.batch?.unit}
+                                        <br /><span className="text-[10px] text-primary-600 font-medium tracking-wide">Rp{dist.batch?.price_per_unit || 0}/{dist.batch?.unit}</span>
+                                    </td>
+                                    <td className="px-5 py-3.5 whitespace-nowrap">
+                                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${statusColors[dist.status] || 'bg-surface-100 text-surface-600'}`}>
+                                            {statusLabels[dist.status] || dist.status}
+                                        </span>
+                                    </td>
+                                    <td className="px-5 py-3.5 text-sm text-surface-500 whitespace-nowrap">
+                                        {dist.pickup_date ? new Date(dist.pickup_date).toLocaleDateString('id-ID') : '-'}
+                                    </td>
+                                    <td className="px-5 py-3.5 text-right whitespace-nowrap">
+                                        {dist.status !== 'delivered' && (
+                                            <button
+                                                onClick={() => updateStatus(dist.id, dist.status)}
+                                                disabled={updatingId === dist.id}
+                                                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-600 text-xs font-medium rounded-lg hover:bg-blue-100 transition-colors disabled:opacity-60"
+                                            >
+                                                <HiArrowRight className="w-3 h-3" />
+                                                {updatingId === dist.id ? 'Updating...' : statusLabels[statusFlow[statusFlow.indexOf(dist.status) + 1]] || 'Next'}
+                                            </button>
+                                        )}
+                                    </td>
+                                </tr>
+                            ))}
+                            {distributions.length === 0 && (
+                                <tr><td colSpan={7} className="px-5 py-10 text-center text-surface-400 text-sm">Belum ada distribusi</td></tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );

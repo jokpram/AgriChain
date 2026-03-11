@@ -2,13 +2,13 @@
 
 ## 1. Team Identity
 *   **Nama Tim:** AgriChain Innovators
-*   **Nama Ketua Tim:** [Nama Ketua Tim]
+*   **Nama Ketua Tim:** JOKO PRAMONO RAMADHANI
 *   **Kontak:**
-    *   **Email:** [Email Ketua Tim/Tim]
-    *   **Institusi:** [Nama Institusi/Universitas/Perusahaan]
+    *   **Email:** jokopramonoramadhani@gmail.com
+    *   **Institusi:** UNIVERSITAS LAMPUNG
     *   **Link Portofolio:** [Link Portofolio/GitHub]
 *   **Nama Anggota Tim & Peran:**
-    *   [Nama Anggota 1] - Hacker (Pengembang Sistem Frontend & Backend)
+    *   [Nama Anggota 1] - 
     *   [Nama Anggota 2] - Hustler (Manajer Strategi Bisnis & Pengembangan Produk)
     *   [Nama Anggota 3] - Hipster (Desainer UI/UX & Spesialis Riset Pengguna)
 *   **Ringkasan Tim:**

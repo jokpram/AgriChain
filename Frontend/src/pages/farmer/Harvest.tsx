@@ -8,22 +8,47 @@ interface Commodity {
     name: string;
 }
 
+interface Farm {
+    id: number;
+    farm_name: string;
+}
+
 const Harvest = () => {
     const { showToast } = useToast();
     const [commodities, setCommodities] = useState<Commodity[]>([]);
-    const [form, setForm] = useState({ commodity_id: '', harvest_date: '', quantity: '', unit: 'kg' });
+    const [farms, setFarms] = useState<Farm[]>([]);
+    const [form, setForm] = useState({
+        commodity_id: '',
+        harvest_date: '',
+        quantity: '',
+        unit: 'kg',
+        farm_id: '',
+        seed_origin: '',
+        planting_date: '',
+        price_per_unit: ''
+    });
     const [newCommodity, setNewCommodity] = useState('');
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [showNewCommodity, setShowNewCommodity] = useState(false);
 
-    useEffect(() => { fetchCommodities(); }, []);
+    useEffect(() => {
+        fetchCommodities();
+        fetchFarms();
+    }, []);
 
     const fetchCommodities = async () => {
         try {
             const res = await api.get('/batch/commodities');
             setCommodities(res.data.data);
+        } catch (err) { console.error(err); }
+    };
+
+    const fetchFarms = async () => {
+        try {
+            const res = await api.get('/farmer/farms');
+            setFarms(res.data.data);
         } catch (err) { console.error(err); }
     };
 
@@ -50,11 +75,24 @@ const Harvest = () => {
                 commodity_id: parseInt(form.commodity_id),
                 harvest_date: form.harvest_date,
                 quantity: parseFloat(form.quantity),
-                unit: form.unit
+                unit: form.unit,
+                farm_id: parseInt(form.farm_id),
+                seed_origin: form.seed_origin,
+                planting_date: form.planting_date,
+                price_per_unit: parseFloat(form.price_per_unit)
             });
             setSuccess(`Batch berhasil dibuat: ${res.data.data.batch_code}`);
             showToast(`Batch ${res.data.data.batch_code} berhasil dibuat!`, 'success');
-            setForm({ commodity_id: '', harvest_date: '', quantity: '', unit: 'kg' });
+            setForm({
+                commodity_id: '',
+                harvest_date: '',
+                quantity: '',
+                unit: 'kg',
+                farm_id: '',
+                seed_origin: '',
+                planting_date: '',
+                price_per_unit: ''
+            });
         } catch (err: any) {
             setError(err.response?.data?.message || 'Gagal mencatat panen');
             showToast(err.response?.data?.message || 'Gagal mencatat panen', 'error');
@@ -102,13 +140,36 @@ const Harvest = () => {
                         </select>
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-surface-700 mb-1.5">Tanggal Panen</label>
-                        <input type="date" value={form.harvest_date} onChange={(e) => setForm({ ...form, harvest_date: e.target.value })}
-                            className="w-full px-4 py-2.5 border border-surface-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none" required />
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-medium text-surface-700 mb-1.5">Waktu Tanam</label>
+                            <input type="date" value={form.planting_date} onChange={(e) => setForm({ ...form, planting_date: e.target.value })}
+                                className="w-full px-4 py-2.5 border border-surface-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none" required />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-surface-700 mb-1.5">Tanggal Panen</label>
+                            <input type="date" value={form.harvest_date} onChange={(e) => setForm({ ...form, harvest_date: e.target.value })}
+                                className="w-full px-4 py-2.5 border border-surface-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none" required />
+                        </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-medium text-surface-700 mb-1.5">Asal Lahan (Tanaman)</label>
+                            <select value={form.farm_id} onChange={(e) => setForm({ ...form, farm_id: e.target.value })}
+                                className="w-full px-4 py-2.5 border border-surface-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none" required>
+                                <option value="">Pilih lahan Anda</option>
+                                {farms.map((f) => <option key={f.id} value={f.id}>{f.farm_name}</option>)}
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-surface-700 mb-1.5">Asal Bibit</label>
+                            <input type="text" value={form.seed_origin} onChange={(e) => setForm({ ...form, seed_origin: e.target.value })}
+                                className="w-full px-4 py-2.5 border border-surface-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none" placeholder="Contoh: Bisi-18" required />
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-[1fr_1fr_1fr] gap-4">
                         <div>
                             <label className="block text-sm font-medium text-surface-700 mb-1.5">Kuantitas</label>
                             <input type="number" step="0.01" value={form.quantity} onChange={(e) => setForm({ ...form, quantity: e.target.value })}
@@ -122,6 +183,11 @@ const Harvest = () => {
                                 <option value="ton">Ton</option>
                                 <option value="kwintal">Kwintal</option>
                             </select>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-surface-700 mb-1.5">Harga per Kuantitas</label>
+                            <input type="number" step="100" value={form.price_per_unit} onChange={(e) => setForm({ ...form, price_per_unit: e.target.value })}
+                                className="w-full px-4 py-2.5 border border-surface-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none" placeholder="Rp" required />
                         </div>
                     </div>
 
